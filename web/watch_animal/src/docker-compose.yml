@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  php:
+    build: ./php
+    tty: true
+    ports:
+      - 8080:80
+  mysql:
+    build: ./db
+    volumes:
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./db/log/mysql:/var/log/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=MdSwAEzbzDzTD5t5
+      - MYSQL_DATABASE=animaldb
+      - MYSQL_USER=animal
+      - MYSQL_PASSWORD=squid1230z

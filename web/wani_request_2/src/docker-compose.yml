@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  caddy:
+    image: caddy
+  request:
+    build: ./request
+  api:
+    build: ./api

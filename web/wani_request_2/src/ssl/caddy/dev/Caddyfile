@@ -1,0 +1,32 @@
+(default_options) {
+  header -Server
+  log {
+    output stdout
+    format json
+  }
+}
+
+(proxy_options) {
+  header_up X-Real-IP {remote_host}
+  header_up X-Forwarded-For {remote_host}
+  header_up X-Forwarded-Proto {scheme}
+}
+
+http://localhost {
+  import default_options
+
+  encode gzip
+
+  route /api/* {
+    uri strip_prefix /api
+    reverse_proxy http://api:3000 {
+      import proxy_options
+    }
+  }
+  
+  route /* {
+    reverse_proxy http://request:80 {
+      import proxy_options
+    }
+  }
+}

@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  php:
+    build: ./php
+    tty: true
+    ports:
+      - 8080:80
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=animaldb
+      - MYSQL_USER=animal
+      - MYSQL_PASSWORD=RTpBfdBT4e3rc5yD
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max_connections=1000

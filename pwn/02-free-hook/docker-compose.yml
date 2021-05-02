@@ -1,0 +1,13 @@
+version: '3'
+services:
+  bstack:
+    build:
+      context: .
+    working_dir: /home/pwn
+    container_name: free-hook
+    ulimits:
+      nproc: 65535
+      core: 0
+    ports:
+      - "9002:9000"
+    entrypoint: /etc/init.sh

@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  caddy:
+    ports:
+      - 8080:80
+    volumes:
+      - $PWD/ssl/caddy/dev/Caddyfile:/etc/caddy/Caddyfile
+  api:
+    environment: 
+      - TARGET=http://localhost:8080
+      - DOMAIN=localhost:8080

@@ -1,0 +1,3 @@
+User-Agent:*
+Disallow:/144c9defac04969c7bfad8efaa8ea194.html
+Sitemap:/sitemap.xml

@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  request:
+    build: ./request
+    environment:
+      - SECRET_URL=http://w4ni-secre7-h1mitu-pa6e.s3-website-ap-northeast-1.amazonaws.com/
+    ports:
+      - 80:80

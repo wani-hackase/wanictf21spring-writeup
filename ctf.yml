@@ -1,0 +1,246 @@
+config:
+  time_start: 1617202800
+  time_end: 1619362800
+  mode_permanent: true
+  mode_speed: false
+  param_speed: 10
+  mode_fluid: true
+  param_fluid: 30
+  mode_register: false
+  recaptcha_score: 0.3
+
+default:
+  max_point: 500
+  min_point: 100
+  public: true
+  submit: true
+  last: true
+  badge: false
+
+challenges:
+  - category: "Crypto"
+    item:
+      - id: 100
+        dir: "cry/simple-conversion"
+        title: "Simple conversion"
+        level: 1
+        flag: "FLAG{7h1s_i5_h0w_we_c0nvert_m3ss@ges_1nt0_num63rs}"
+        writer: "Laika"
+      - id: 101
+        dir: "cry/easy"
+        title: "Easy"
+        level: 2
+        flag: "FLAG{WELCOMETOCRYPTOCHALLENGE}"
+        writer: "Laika"
+      - id: 102
+        dir: "cry/extra"
+        title: "Extra"
+        level: 3
+        flag: "FLAG{@n_ex7ra_param3ter_ru1n5_3very7h1n9}"
+        writer: "Laika"
+      - id: 103
+        dir: "cry/cant-restore-the-flag"
+        title: "Can't restore the flag?"
+        level: 4
+        flag: "FLAG{Ch1n3s3_r3m@1nd3r_7h30r3m__so_u5eful}"
+        writer: "Laika"
+        badge: true
+      - id: 104
+        dir: "cry/oucs"
+        title: "OUCS"
+        level: 5
+        flag: "FLAG{OU_d0es_n0t_repre53nt_Osaka_University_but_Okamoto-Uchiyama}"
+        writer: "Laika"
+        badge: true
+  - category: "Forensics"
+    item:
+      - id: 200
+        dir: "for/presentation"
+        title: "presentation"
+        level: 1
+        flag: "FLAG{you_know_how_to_edit_ppsx}"
+        writer: "takushooo"
+      - id: 202
+        dir: "for/secure_document"
+        title: "secure document"
+        level: 2
+        flag: "FLAG{Nani!very_strong_password!}"
+        writer: "takushooo"
+      - id: 203
+        dir: "for/slow"
+        title: "slow"
+        level: 3
+        flag: "FLAG{encoded_by_slow-scan_television}"
+        writer: "takushooo"
+      - id: 204
+        dir: "for/illegal_image"
+        title: "illegal image"
+        level: 4
+        flag: "FLAG{ICMP_Exfiltrate_image}"
+        writer: "takushooo"
+      - id: 205
+        dir: "for/MixedUSB"
+        title: "MixedUSB"
+        level: 5
+        flag: "FLAG{mixed_file_allocation_table}"
+        writer: "takushooo"
+  - category: "Misc"
+    item:
+      - id: 300
+        dir: "mis/git_master"
+        title: "Git Master"
+        level: 2
+        flag: "FLAG{y0u_4r3_p3rf3c7_g1t_m45t3r}"
+        writer: "okmt, hi120ki"
+      - id: 301
+        dir: "mis/automaton-lab"
+        title: "Automaton Lab."
+        level: 3
+        flag: "FLAG{W3_4w4rd_y0u_d0c70r473_1n_Fu7ur3_S1gh7}"
+        writer: "Badlylucky"
+        badge: true
+      - id: 302
+        dir: "mis/binary"
+        title: "binary"
+        level: 1
+        flag: "FLAG{the_basic_knowledge_of_communication}"
+        writer: "saru"
+      - id: 303
+        dir: "mis/ask"
+        title: "ASK"
+        level: 2
+        flag: "FLAG{als0-k0own-4s-0n-0ff-key1ng}"
+        writer: "saru"
+      - id: 304
+        dir: "mis/manchester"
+        title: "Manchester"
+        level: 3
+        flag: "FLAG{avoiding-consective-ones-and-zeros}"
+        writer: "saru"
+  - category: "Pwn"
+    item:
+      - id: 400
+        dir: "pwn/01-netcat"
+        title: "01 netcat"
+        level: 1
+        flag: "FLAG{this_is_the_same_netcat_problem_as_previous_one}"
+        writer: "saru"
+        badge: true
+      - id: 401
+        dir: "pwn/02-free-hook"
+        title: "02 free hook"
+        level: 2
+        flag: "FLAG{malloc_hook_is_a_tech_for_heap_exploitation}"
+        writer: "saru"
+        badge: true
+      - id: 402
+        dir: "pwn/03-rop-machine-easy"
+        title: "03 rop machine easy"
+        level: 2
+        flag: "FLAG{this-is-simple-return-oriented-programming}"
+        writer: "saru"
+        badge: true
+      - id: 403
+        dir: "pwn/04-rop-machine-normal"
+        title: "04 rop machine normal"
+        level: 2
+        flag: "FLAG{now-you-can-call-any-system-calls-with-syscall}"
+        writer: "saru"
+        badge: true
+      - id: 404
+        dir: "pwn/05-rop-machine-hard"
+        title: "05 rop machine hard"
+        level: 3
+        flag: "FLAG{y0ur-next-step-is-to-use-pwntools}"
+        writer: "saru"
+        badge: true
+      - id: 405
+        title: "06 SuperROP"
+        dir: "pwn/06-srop"
+        level: 4
+        flag: "FLAG{0v3rwr173_r361573r5_45_y0u_l1k3}"
+        writer: "EBeb"
+        badge: true
+      - id: 406
+        title: "07 Tower of Hanoi"
+        dir: "pwn/07-tower-of-hanoi"
+        level: 5
+        flag: "FLAG{5up3r_f457_h4n01_501v3r}"
+        writer: "EBeb"
+        badge: true
+      - id: 407
+        title: "08 Gacha Breaker"
+        dir: "pwn/08-gacha-breaker"
+        level: 5
+        flag: "FLAG{G4ch4_15_3v1l_bu7_c4n7_5t0p}"
+        writer: "EBeb"
+        badge: true
+  - category: "Reversing"
+    item:
+      - id: 500
+        dir: "rev/secret"
+        title: "secret"
+        level: 1
+        flag: "FLAG{ana1yze_4nd_strin6s_and_execu7e_6in}"
+        writer: "hi120ki"
+      - id: 501
+        dir: "rev/execute"
+        title: "execute"
+        level: 2
+        flag: "FLAG{c4n_y0u_execu4e_th1s_fi1e}"
+        writer: "hi120ki"
+      - id: 502
+        dir: "rev/timer"
+        title: "timer"
+        level: 4
+        flag: "FLAG{S0rry_Hav3_you_b3en_wai7ing_lon6?_No_I_ju5t_g0t_her3}"
+        writer: "hi120ki"
+      - id: 503
+        dir: "rev/licence"
+        title: "licence"
+        level: 5
+        flag: "FLAG{4n6r_15_4_5up3r_p0w3rfu1_5ymb0l1c_3x3cu710n_4n4ly515_700l}"
+        writer: "hi120ki"
+  - category: "Web"
+    item:
+      - id: 600
+        dir: "web/fake"
+        title: "fake"
+        level: 1
+        flag: "FLAG{wow_y0u_h4ve_3po4ted_th3_7ake}"
+        writer: "hi120ki"
+        badge: true
+      - id: 601
+        dir: "web/exception"
+        title: "exception"
+        level: 2
+        flag: "FLAG{b4d_excep7ion_handl1ng}"
+        writer: "suuhito"
+        badge: true
+      - id: 602
+        dir: "web/wani_request_1"
+        title: "Wani Request 1"
+        level: 2
+        flag: "FLAG{h77p_r3f3r3r_15_54f3_42a2cc2f275}"
+        writer: "nkt"
+        badge: true
+      - id: 603
+        dir: "web/cf-basic"
+        title: "CloudFront Basic Auth"
+        level: 4
+        flag: "FLAG{ap1_g4teway_acc3ss_con7rol}"
+        writer: "suuhito"
+        badge: true
+      - id: 604
+        dir: "web/watch_animal"
+        title: "watch animal"
+        level: 5
+        flag: "FLAG{bl1ndSQLi}"
+        writer: "okmt"
+        badge: true
+      - id: 605
+        dir: "web/wani_request_2"
+        title: "Wani Request 2"
+        level: 3
+        flag: "FLAG{y0u_4r3_x55-60d_c75a4c80cf07}"
+        writer: "nkt"

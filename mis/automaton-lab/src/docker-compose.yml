@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  netcat:
+    build: .
+    image: automaton-lab-image
+    container_name: automaton-lab
+    ports:
+      - "50010:50010"

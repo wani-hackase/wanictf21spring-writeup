@@ -1,0 +1,213 @@
+# Serverless Application Model(SAM)を用いて作成したAWS Cloudformation template
+# sam deployでデプロイ可能
+# https://aws.amazon.com/jp/serverless/sam/
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  cf-basic
+
+  Sample SAM Template for cf-basic
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Parameters:
+  FLAG1:
+    Type: String
+    NoEcho: true
+  FLAG2:
+    Type: String
+    NoEcho: true
+  BucketName:
+    Type: String
+  HostedZoneName:
+    Type: String
+  CloudFrontDomainName:
+    Type: String
+  AcmCertificateArn:
+    Type: String
+
+Resources:
+  HelloFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: hello/
+      Handler: hello.lambda_handler
+      Runtime: python3.8
+      Environment:
+        Variables:
+          FLAG: !Ref FLAG1
+      Events:
+        Hello:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            # "https://${APIID}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello"にPOSTするとHelloFunctionが動く
+            Path: /hello
+            Method: post
+            RestApiId: !Ref API
+
+  AdminFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: admin/
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      Environment:
+        Variables:
+          FLAG: !Ref FLAG2
+      Events:
+        Admin:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            # "https://${APIID}.execute-api.${AWS::Region}.amazonaws.com/Prod/admin"にGETするとAdminFunctionが動く
+            Path: /admin
+            Method: get
+            RestApiId: !Ref API
+
+  API:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      EndpointConfiguration:
+        Type: REGIONAL
+
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - edgelambda.amazonaws.com
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  BasicAuthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: basic_auth/
+      Handler: app.handler
+      Runtime: nodejs12.x
+      MemorySize: 128
+      Timeout: 5
+      Role: !GetAtt LambdaRole.Arn
+      AutoPublishAlias: prod
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Sub "/aws/lambda/${BasicAuthFunction}"
+
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+
+  CloudFrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Sub "access-identity-${Bucket}"
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref Bucket
+      PolicyDocument:
+        Statement:
+        - Action: "s3:GetObject"
+          Effect: Allow
+          Resource: !Sub "arn:aws:s3:::${Bucket}/*"
+          Principal:
+            CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
+
+  CloudFront:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          # Cloudfront経由で接続する先としてAPI GatewayとS3を登録
+          - Id: ApiGateway
+            DomainName: !Sub "${API}.execute-api.${AWS::Region}.amazonaws.com"
+            CustomOriginConfig:
+              HTTPSPort: 443
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols: [ "TLSv1", "TLSv1.1", "TLSv1.2" ]
+            OriginPath: "/Prod"
+          - Id: S3
+            DomainName: !GetAtt Bucket.DomainName
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}"
+        DefaultRootObject: index.html
+        Enabled: true
+        HttpVersion: http2
+        DefaultCacheBehavior:
+          # CacheBehaviorsで設定されたpath(/admin, /hello)以外の通信はすべてS3に流す
+          TargetOriginId: S3
+          ForwardedValues:
+            QueryString: false
+          ViewerProtocolPolicy: redirect-to-https
+        CacheBehaviors:
+          # "${CloudFrontDomainName}/admin"に対する通信は"https://${APIID}.execute-api.${AWS::Region}.amazonaws.com/Prod/admin"の結果を利用
+          - PathPattern: admin
+            AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            TargetOriginId: ApiGateway
+            ViewerProtocolPolicy: redirect-to-https
+            # Basic認証
+            LambdaFunctionAssociations:
+              - EventType: viewer-request
+                LambdaFunctionARN: !Ref BasicAuthFunction.Version
+            ForwardedValues:
+              QueryString: false
+          # "${CloudFrontDomainName}/hello"に対する通信は"https://${APIID}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello"の結果を利用
+          - PathPattern: hello
+            AllowedMethods:
+              - HEAD
+              - GET
+              - OPTIONS
+              - PUT
+              - PATCH
+              - POST
+              - DELETE
+            CachedMethods:
+              - HEAD
+              - GET
+            TargetOriginId: ApiGateway
+            ViewerProtocolPolicy: redirect-to-https
+            ForwardedValues:
+              QueryString: false
+        IPV6Enabled: true
+        PriceClass: PriceClass_200
+        # 以下、独自ドメインの設定
+        Aliases:
+          - !Ref CloudFrontDomainName
+        ViewerCertificate:
+          AcmCertificateArn: !Ref AcmCertificateArn
+          MinimumProtocolVersion: TLSv1.2_2019
+          SslSupportMethod: sni-only
+
+  DNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Sub "${HostedZoneName}."
+      Name: !Sub "${CloudFrontDomainName}."
+      Type: A
+      AliasTarget:
+        # https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/quickref-route53.html#w2aac27c21c80c11
+        # 以下の値は定数
+        HostedZoneId: Z2FDTNDATAQYW2
+        DNSName: !GetAtt CloudFront.DomainName
